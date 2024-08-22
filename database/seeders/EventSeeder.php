@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
 class EventSeeder extends Seeder
@@ -14,6 +15,7 @@ class EventSeeder extends Seeder
     public function run(): void
     {
         DB::table('events')->insert([
+            'id' => (string) Str::uuid(),
             'name' => 'Event 1',
             'description' => 'Description of event 1',
             'datetime' => '2024-07-24 13:15:41',
@@ -26,6 +28,7 @@ class EventSeeder extends Seeder
         ]);
 
         DB::table('events')->insert([
+            'id' => (string) Str::uuid(),
             'name' => 'Event 2',
             'description' => 'Description of event 2',
             'datetime' => '2024-07-25 13:15:41',
@@ -38,6 +41,7 @@ class EventSeeder extends Seeder
         ]);
 
         DB::table('events')->insert([
+            'id' => (string) Str::uuid(),
             'name' => 'Event 3',
             'description' => 'Description of event 3',
             'datetime' => '2024-07-26 13:15:41',
@@ -50,6 +54,7 @@ class EventSeeder extends Seeder
         ]);
 
         DB::table('events')->insert([
+            'id' => (string) Str::uuid(),
             'name' => 'Event 4',
             'description' => 'Description of event 4',
             'datetime' => '2024-07-27 13:15:41',
@@ -62,6 +67,7 @@ class EventSeeder extends Seeder
         ]);
 
         DB::table('events')->insert([
+            'id' => (string) Str::uuid(),
             'name' => 'Event 5',
             'description' => 'Description of event 5',
             'datetime' => '2024-07-28 13:15:41',

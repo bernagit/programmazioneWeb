@@ -36,6 +36,13 @@
                                 </div>
                                 {{-- <a href="{{ route('password.request') }}" class="btn btn-link">Forgot Your Password?</a> --}}
                             </div>
+                            @if (session('status'))
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ session('status') }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                            @endif
                             <button type="submit" class="btn light-2 w-100">Login</button>
                         </form>
                     </div>

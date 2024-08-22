@@ -82,11 +82,11 @@ function createEventCard(event) {
 
     var cardButton = document.createElement('a');
     cardButton.className = 'btn light-2';
-    cardButton.href = '#';
+    cardButton.href = '/passedevents/' + event.id;
     cardButton.textContent = 'Show event info';
-    cardButton.onclick = function () {
-        alert('Pan to location: ' + event.latitude + ', ' + event.longitude);
-    };
+    // cardButton.onclick = function () {
+    //     alert('Pan to location: ' + event.latitude + ', ' + event.longitude);
+    // };
 
     cardBody.appendChild(cardTitle);
     cardBody.appendChild(cardText);
