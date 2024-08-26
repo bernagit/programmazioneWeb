@@ -75,36 +75,22 @@
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="users-tab" data-bs-toggle="tab" href="#tabs2" role="tab"
-                            aria-controls="tabs2" aria-selected="false">Manage Users</a>
+                            aria-controls="tabs2" aria-selected="false">Users</a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="events-tab" data-bs-toggle="tab" href="#tabs3" role="tab"
                             aria-controls="tabs3" aria-selected="false">Manage Events</a>
                     </li>
+                    {{-- <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="statistics-tab" data-bs-toggle="tab" href="#tabs4" role="tab"
+                            aria-controls="tabs4" aria-selected="false">Statistics</a>
+                    </li> --}}
                 </ul>
             </div>
             <div class="col-lg-9 col-md-8">
                 <div class="tab-content" id="content-tabs">
                     <div class="tab-pane fade show active" id="tabs1" role="tabpanel" aria-labelledby="dashboard-tab">
                         <h1 class="tab-content-title">Dashboard</h1>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card text-white mb-3 light-3">
-                                    <div class="card-header">Total Users</div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $totalUsers }}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card text-white mb-3 light-4">
-                                    <div class="card-header">Total Events</div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $totalEvents }}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <hr class="my-4">
                         <div class="row">
                             <div class="col-md-6">
@@ -114,10 +100,14 @@
                         </div>
                     </div>
 
-                    @include('dashboard.admin.users', ['users' => $users, 'admins' => $admins])
+                    @include('dashboard.admin.users', ['users' => $users])
                     @include('dashboard.admin.events', ['events' => $events])
                 </div>
             </div>
         </div>
     </div>
+@endsection
+
+@section('additionalscripts')
+    <!-- Add any additional scripts here if needed -->
 @endsection

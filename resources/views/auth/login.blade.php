@@ -36,14 +36,21 @@
                                 </div>
                                 {{-- <a href="{{ route('password.request') }}" class="btn btn-link">Forgot Your Password?</a> --}}
                             </div>
-                            @if (session('status'))
+                            @if (session('status') == 'failed')
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    {{ session('status') }}
+                                    Invalid email or password. Please try again.
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                         aria-label="Close"></button>
                                 </div>
                             @endif
-                            <button type="submit" class="btn light-2 w-100">Login</button>
+                            @if (session('status') == 'success')
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    User created successfully. Please login.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                            @endif
+                            <button type="submit" class="btn light-2 btn-show w-100">Login</button>
                         </form>
                     </div>
                     <div class="card-footer text-center">

@@ -36,12 +36,18 @@
                                 <div class="card-header">
                                     <h3>{{ $event->name }}</h3>
                                 </div>
-                                <img src="miao.jpg" class="card-img-top">
+                                @isset($event->image_path)
+                                    <div class="img-event">
+                                        <img src="{{ Storage::url('images/' . $event->image_path) }}"
+                                            class="card-img-top img-fluid img-event">
+                                    </div>
+                                @endisset
+                                {{-- <img src="{{ Storage::url('images/' . $event->image_path) }}" class="card-img-top"> --}}
                                 <div class="card-body">
                                     <p>{{ $event->description }}</p>
                                     <p><strong>Date:</strong> {{ $event->date }}</p>
                                     <p><strong>Time:</strong> {{ $event->time }}</p>
-                                    <p><strong>Venue:</strong> {{ $event->venue }}</p>
+                                    <p><strong>Price:</strong> {{ $event->price }}</p>
                                 </div>
                             </div>
                         </div>

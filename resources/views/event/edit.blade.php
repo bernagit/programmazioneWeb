@@ -4,13 +4,6 @@
 
 @section('additionalstyles')
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <style>
-        #map {
-            height: 400px;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-    </style>
 @endsection
 
 @section('content')
@@ -22,12 +15,12 @@
                         <h3>Create Event</h3>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('events.store') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('events.update', $event->id) }}" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Event Name</label>
                                 <input type="text" name="name"
-                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
+                                    class="form-control @error('name') is-invalid @enderror" value="{{ $event->name }}"
                                     required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -36,7 +29,7 @@
 
                             <div class="mb-3">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3">{{ old('description') }}</textarea>
+                                <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3">{{ $event->description }}</textarea>
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -46,7 +39,7 @@
                                 <label for="datetime" class="form-label">Date and Time</label>
                                 <input type="datetime-local" name="datetime"
                                     class="form-control @error('datetime') is-invalid @enderror"
-                                    value="{{ old('datetime') }}" required>
+                                    value="{{ $event->datetime }}" required>
                                 @error('datetime')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -55,14 +48,14 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <p>Select the coordinates from map</p>
-                                    <div id="map">
-                                    </div>
+                                    <div id="map" style="height: 300px;"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="latitude" class="form-label">Latitude</label>
                                         <input id="latitude" type="text" name="latitude"
-                                            class="form-control @error('latitude') is-invalid @enderror">
+                                            class="form-control @error('latitude') is-invalid @enderror"
+                                            value="{{ $event->latitude }}">
                                         @error('latitude')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -71,7 +64,8 @@
                                     <div class="mb-3">
                                         <label for="longitude" class="form-label">Longitude</label>
                                         <input id="longitude" type="text" name="longitude"
-                                            class="form-control @error('longitude') is-invalid @enderror"">
+                                            class="form-control @error('longitude') is-invalid @enderror"
+                                            value="{{ $event->longitude }}">
                                         @error('longitude')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -82,7 +76,7 @@
                             <div class="mb-3">
                                 <label for="price" class="form-label">Price</label>
                                 <input type="number" name="price"
-                                    class="form-control @error('price') is-invalid @enderror" value="{{ old('price') }}"
+                                    class="form-control @error('price') is-invalid @enderror" value="{{ $event->price }}"
                                     step="0.01">
                                 @error('price')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -102,13 +96,19 @@
                                 <label for="additional_info" class="form-label">Additional Info</label>
                                 <input type="text" name="additional_info"
                                     class="form-control @error('additional_info') is-invalid @enderror"
-                                    value="{{ old('additional_info') }}">
+                                    value="{{ $event->additional_info }}">
                                 @error('additional_info')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-
-                            <button type="submit" class="btn btn-primary w-100">Create Event</button>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary w-100">Update Event</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{{ route('dashboard') }}" class="btn btn-secondary w-100">Cancel</a>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -121,11 +121,11 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var map = L.map('map').setView([45.54, 10.21], 13);
+            var map = L.map('map').setView([{{ $event->latitude }}, {{ $event->longitude }}], 13);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-            var marker = L.marker([45.54, 10.21], {
+            var marker = L.marker([{{ $event->latitude }}, {{ $event->longitude }}], {
                 draggable: true
             }).addTo(map);
 
@@ -136,7 +136,7 @@
                 document.getElementById('longitude').value = position.lng;
             });
 
-            function onMapClick(e) {
+            map.on('click', function(e) {
                 var lat = e.latlng.lat;
                 var lng = e.latlng.lng;
 
@@ -148,14 +148,10 @@
                     draggable: true
                 }).addTo(map);
 
-                // Set the latitude and longitude input fields
+                // Update the latitude and longitude input fields
                 document.getElementById('latitude').value = lat;
                 document.getElementById('longitude').value = lng;
-            }
-
-
-
-            map.on('click', onMapClick);
+            });
         });
     </script>
 @endsection

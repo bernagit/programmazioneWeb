@@ -24,7 +24,7 @@ class LoginController extends Controller
             return redirect()->route('dashboard');
         }
 
-        return redirect('login')->with('status', 'Invalid credentials!');
+        return redirect('login')->with('status', 'failed');
     }
 
     public function logout(Request $request)

@@ -54,4 +54,46 @@ class EventController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Event created successfully!');
     }
+
+    public function edit(Request $request, $id)
+    {
+        $event = Event::find($id);
+        return view('event.edit', ['event' => $event]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required',
+            'description' => 'nullable|string',
+            'datetime' => 'required|date',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'price' => 'nullable|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'additional_info' => 'nullable|string',
+        ]);
+
+        $event = Event::find($id);
+
+        if ($request->hasFile('image')) {
+            $path = $this->upload($request);
+            if ($path === null) {
+                return redirect()->back()->withErrors(['image' => 'Failed to upload the image. Please try again.']);
+            } else {
+                $validated['image_path'] = $path;
+            }
+        }
+
+        $event->update($validated);
+
+        return redirect()->route('dashboard')->with('success', 'Event updated successfully!');
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $event = Event::find($id);
+        $event->delete();
+        return redirect()->route('dashboard')->with('success', 'Event deleted successfully!');
+    }
 }

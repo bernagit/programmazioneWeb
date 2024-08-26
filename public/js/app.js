@@ -5,7 +5,7 @@ var map;
 // Function to fetch passed events
 async function getPassedEvents() {
     try {
-        const response = await axios.get('/api/passedevents');
+        const response = await axios.get('/api/passedEvents');
         return response.data;
     } catch (error) {
         console.error('Error fetching passed events:', error);
@@ -24,9 +24,7 @@ function initializeMap(latitude, longitude) {
     map = L.map('map').setView([latitude, longitude], 12);
 
     // Add a tile layer to the map
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 }
 
 // Function to add markers to the map
@@ -81,8 +79,8 @@ function createEventCard(event) {
     cardText.textContent = event.description;
 
     var cardButton = document.createElement('a');
-    cardButton.className = 'btn light-2';
-    cardButton.href = '/passedevents/' + event.id;
+    cardButton.className = 'btn light-2 btn-show';
+    cardButton.href = '/passedEvents/' + event.id;
     cardButton.textContent = 'Show event info';
     // cardButton.onclick = function () {
     //     alert('Pan to location: ' + event.latitude + ', ' + event.longitude);
@@ -102,27 +100,47 @@ async function displayEventCards(events) {
 
     cardsContainer.innerHTML = ''
 
+    if (events.length === 0) {
+        var noEventsCard = document.createElement('div');
+        noEventsCard.className = 'card';
+
+        var noEventsCardBody = document.createElement('div');
+        noEventsCardBody.className = 'card-body';
+
+        var noEventsCardTitle = document.createElement('h5');
+        noEventsCardTitle.className = 'card-title';
+        noEventsCardTitle.textContent = 'No events found';
+
+        noEventsCardBody.appendChild(noEventsCardTitle);
+        noEventsCard.appendChild(noEventsCardBody);
+
+        cardsContainer.appendChild(noEventsCard);
+        return;
+    }
     events.forEach(function (event) {
         var card = createEventCard(event);
         cardsContainer.appendChild(card);
     });
 }
-
 // Initialize geocoder
 var geocoder = L.Control.Geocoder.nominatim();
 
 // Handle search functionality
+function goToLocation(location) {
+    fetch(
+        `https://nominatim.openstreetmap.org/search?q=${location}&format=json&addressdetails=1&limit=1`
+    )
+        .then(response => response.json())
+        .then(data => {
+            const lat = data[0].lat;
+            const lon = data[0].lon;
+            map.setView([lat, lon], 13);
+        });
+}
+
 document.getElementById('search-button').addEventListener('click', function () {
     var query = document.getElementById('search-input').value;
-    geocoder.geocode(query, function (results) {
-        if (results.length > 0) {
-            var result = results[0];
-            var latlng = result.center;
-            map.setView(latlng, 13); // Zoom level of 13
-        } else {
-            alert('No results found');
-        }
-    });
+    goToLocation(query);
 });
 
 function showPlaceholders() {

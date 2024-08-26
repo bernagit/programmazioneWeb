@@ -42,7 +42,7 @@
                                 <input type="password" class="form-control" id="password_confirmation"
                                     name="password_confirmation" required>
                             </div>
-                            <button type="submit" class="btn light-2 w-100">Register</button>
+                            <button type="submit" class="btn light-2 btn-show w-100">Register</button>
                         </form>
                     </div>
                     <div class="card-footer text-center">
