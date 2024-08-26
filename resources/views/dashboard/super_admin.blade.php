@@ -104,6 +104,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="card text-white mb-3 light-5">
+                                    <div class="card-header">Total Likes</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $totalLikes }}</h5>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <hr class="my-4">
                         <div class="row">

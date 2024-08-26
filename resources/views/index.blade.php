@@ -80,6 +80,21 @@
                 </div>
             </div>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const infoIcon = document.getElementById('infoIcon');
+                const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+
+                infoIcon.addEventListener('click', function() {
+                    infoModal.show();
+                });
+
+                const buttonClose = document.getElementById('btn-close');
+                buttonClose.addEventListener('click', function() {
+                    infoModal.hide();
+                });
+            });
+        </script>
     @endguest
 @endsection
 
@@ -118,19 +133,6 @@
                 } else {
                     suggestionsList.innerHTML = '';
                 }
-            });
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            const infoIcon = document.getElementById('infoIcon');
-            const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
-
-            infoIcon.addEventListener('click', function() {
-                infoModal.show();
-            });
-
-            const buttonClose = document.getElementById('btn-close');
-            buttonClose.addEventListener('click', function() {
-                infoModal.hide();
             });
         });
     </script>

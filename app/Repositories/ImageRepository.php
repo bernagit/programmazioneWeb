@@ -16,15 +16,20 @@ class ImageRepository
     private function storeImage($image)
     {
         try {
-            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            // $out = new \Symfony\Component\Console\Output\ConsoleOutput();
             $name = Uuid::uuid4()->toString();
             $path = $name . '.' . $image->extension();
-            $out->writeln($path);
+            // $out->writeln($path);
             $res = Storage::disk('public')->putFileAs('images', $image, $path);
-            $out->writeln($res);
+            // $out->writeln($res);
             return $path;
         } catch (Exception $e) {
             return null;
         }
+    }
+
+    public function uploadNullImage()
+    {
+        return 'default.png';
     }
 }

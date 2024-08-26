@@ -22,52 +22,50 @@
     <button type="submit" class="btn light-2 btn-show" id="submit-button">Change Password</button>
 </form>
 
-@section('additionalscripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Toggle password visibility for new password
-            const toggleNewPasswordButton = document.getElementById('toggle-new-password');
-            const newPasswordField = document.getElementById('password');
-            toggleNewPasswordButton.addEventListener('click', function() {
-                if (newPasswordField.type === 'password') {
-                    newPasswordField.type = 'text';
-                    toggleNewPasswordButton.querySelector('i').classList.remove('fa-eye');
-                    toggleNewPasswordButton.querySelector('i').classList.add('fa-eye-slash');
-                } else {
-                    newPasswordField.type = 'password';
-                    toggleNewPasswordButton.querySelector('i').classList.remove('fa-eye-slash');
-                    toggleNewPasswordButton.querySelector('i').classList.add('fa-eye');
-                }
-            });
-
-            // Toggle password visibility for confirm password
-            const toggleConfirmPasswordButton = document.getElementById('toggle-confirm-password');
-            const confirmPasswordField = document.getElementById('confirm_password');
-            toggleConfirmPasswordButton.addEventListener('click', function() {
-                if (confirmPasswordField.type === 'password') {
-                    confirmPasswordField.type = 'text';
-                    toggleConfirmPasswordButton.querySelector('i').classList.remove('fa-eye');
-                    toggleConfirmPasswordButton.querySelector('i').classList.add('fa-eye-slash');
-                } else {
-                    confirmPasswordField.type = 'password';
-                    toggleConfirmPasswordButton.querySelector('i').classList.remove('fa-eye-slash');
-                    toggleConfirmPasswordButton.querySelector('i').classList.add('fa-eye');
-                }
-            });
-
-            // Validate passwords match before form submission
-            const form = document.getElementById('change-password-form');
-            form.addEventListener('submit', function(event) {
-                const newPassword = newPasswordField.value;
-                const confirmPassword = confirmPasswordField.value;
-
-                if (newPassword !== confirmPassword) {
-                    event.preventDefault(); // Prevent form submission
-                    document.getElementById('password-error').style.display = 'block';
-                } else {
-                    document.getElementById('password-error').style.display = 'none';
-                }
-            });
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle password visibility for new password
+        const toggleNewPasswordButton = document.getElementById('toggle-new-password');
+        const newPasswordField = document.getElementById('password');
+        toggleNewPasswordButton.addEventListener('click', function() {
+            if (newPasswordField.type === 'password') {
+                newPasswordField.type = 'text';
+                toggleNewPasswordButton.querySelector('i').classList.remove('fa-eye');
+                toggleNewPasswordButton.querySelector('i').classList.add('fa-eye-slash');
+            } else {
+                newPasswordField.type = 'password';
+                toggleNewPasswordButton.querySelector('i').classList.remove('fa-eye-slash');
+                toggleNewPasswordButton.querySelector('i').classList.add('fa-eye');
+            }
         });
-    </script>
-@endsection
+
+        // Toggle password visibility for confirm password
+        const toggleConfirmPasswordButton = document.getElementById('toggle-confirm-password');
+        const confirmPasswordField = document.getElementById('confirm_password');
+        toggleConfirmPasswordButton.addEventListener('click', function() {
+            if (confirmPasswordField.type === 'password') {
+                confirmPasswordField.type = 'text';
+                toggleConfirmPasswordButton.querySelector('i').classList.remove('fa-eye');
+                toggleConfirmPasswordButton.querySelector('i').classList.add('fa-eye-slash');
+            } else {
+                confirmPasswordField.type = 'password';
+                toggleConfirmPasswordButton.querySelector('i').classList.remove('fa-eye-slash');
+                toggleConfirmPasswordButton.querySelector('i').classList.add('fa-eye');
+            }
+        });
+
+        // Validate passwords match before form submission
+        const form = document.getElementById('change-password-form');
+        form.addEventListener('submit', function(event) {
+            const newPassword = newPasswordField.value;
+            const confirmPassword = confirmPasswordField.value;
+
+            if (newPassword !== confirmPassword) {
+                event.preventDefault(); // Prevent form submission
+                document.getElementById('password-error').style.display = 'block';
+            } else {
+                document.getElementById('password-error').style.display = 'none';
+            }
+        });
+    });
+</script>

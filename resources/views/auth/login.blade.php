@@ -29,13 +29,6 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                                    <label class="form-check-label" for="remember">Remember me</label>
-                                </div>
-                                {{-- <a href="{{ route('password.request') }}" class="btn btn-link">Forgot Your Password?</a> --}}
-                            </div>
                             @if (session('status') == 'failed')
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                     Invalid email or password. Please try again.

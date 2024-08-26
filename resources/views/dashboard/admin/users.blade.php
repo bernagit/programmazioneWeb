@@ -17,7 +17,7 @@
             </thead>
             <tbody>
                 <!-- Loop through users -->
-                @foreach ($users as $user)
+                @forelse ($users as $user)
                     <tr>
                         <td>{{ $user->id }}</td>
                         <td>{{ $user->name }}</td>
@@ -27,7 +27,7 @@
                         <td>
                             <!-- Responsive button group -->
                             <div class="btn-group" role="group">
-                                @isset($authUser)
+                                @if (auth()->user()->isSuperAdmin())
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#confirmChangePermission" data-id="{{ $user->id }}">
                                         Upgrade to Admin
@@ -38,15 +38,19 @@
                                     </button>
                                 @else
                                     No actions available
-                                @endisset
+                                @endif
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center">No users found.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
-    @isset($authUser)
+    @if (auth()->user()->isSuperAdmin())
         <hr class="my-4">
         <h1 class="tab-content-title">Admins</h1>
         <!-- Search input for Admins -->
@@ -65,7 +69,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($admins as $admin)
+                    @forelse ($admins as $admin)
                         <tr>
                             <td>{{ $admin->id }}</td>
                             <td>{{ $admin->name }}</td>
@@ -85,11 +89,15 @@
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center">No admins found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
-    @endisset
+    @endif
 </div>
 
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
@@ -165,8 +173,18 @@
         function filterTable(inputId, tableId) {
             const input = document.getElementById(inputId);
             const table = document.getElementById(tableId);
-            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
+            if (!input || !table) {
+                return;
+            }
+            let rows = table.getElementsByTagName('tbody');
+            if (!input || !table || !rows) {
+                return;
+            } else {
+                rows = rows[0].getElementsByTagName('tr');
+            }
+            if (!rows) {
+                return;
+            }
             input.addEventListener('input', function() {
                 const filter = input.value.toLowerCase();
                 for (let i = 0; i < rows.length; i++) {

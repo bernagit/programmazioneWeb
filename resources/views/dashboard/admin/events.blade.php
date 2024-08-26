@@ -9,6 +9,7 @@
                     <th>Event Name</th>
                     <th>Description</th>
                     <th>Date</th>
+                    <th>Creator</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -18,21 +19,30 @@
                         <td>{{ $event->name }}</td>
                         <td>{{ $event->description }}</td>
                         <td>{{ \Carbon\Carbon::parse($event->datetime)->format('F j, Y, g:i a') }}</td>
+                        <td>{{ $event->creator->email }}</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a href="{{ route('events.edit', $event->id) }}" class="btn btn-info btn-sm">Edit</a>
-                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#confirmDeleteEventModal" data-id="{{ $event->id }}">
-                                    Delete
-                                </button>
+                                {{-- View button is always shown --}}
+                                <a href="{{ route('showEvent', $event->id) }}" class="btn btn-success btn-sm">View</a>
+
+                                {{-- Check if the current user is the creator of the event or is a superuser --}}
+                                @if ($event->created_by == auth()->id() || auth()->user()->isSuperAdmin())
+                                    <a href="{{ route('events.edit', $event->id) }}"
+                                        class="btn btn-warning btn-sm">Edit</a>
+                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#confirmDeleteEventModal" data-id="{{ $event->id }}">
+                                        Delete
+                                    </button>
+                                @endif
                             </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center">No events available.</td>
+                        <td colspan="5" class="text-center">No events available.</td>
                     </tr>
                 @endforelse
+
             </tbody>
         </table>
     </div>

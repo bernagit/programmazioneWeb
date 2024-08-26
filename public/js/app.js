@@ -78,9 +78,13 @@ function createEventCard(event) {
     cardText.className = 'card-text';
     cardText.textContent = event.description;
 
+    var likeCount = document.createElement('div');
+    likeCount.className = 'd-flex align-items-center'; // Flexbox for alignment
+    likeCount.innerHTML = '<i class="fas fa-heart heart-icon me-1"></i><span>' + event.likes_count + '</span>';
+
     var cardButton = document.createElement('a');
     cardButton.className = 'btn light-2 btn-show';
-    cardButton.href = '/passedEvents/' + event.id;
+    cardButton.href = '/showEvent/' + event.id;
     cardButton.textContent = 'Show event info';
     // cardButton.onclick = function () {
     //     alert('Pan to location: ' + event.latitude + ', ' + event.longitude);
@@ -88,6 +92,7 @@ function createEventCard(event) {
 
     cardBody.appendChild(cardTitle);
     cardBody.appendChild(cardText);
+    cardBody.appendChild(likeCount);
     cardBody.appendChild(cardButton);
     card.appendChild(cardBody);
 

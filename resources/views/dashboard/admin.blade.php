@@ -107,7 +107,3 @@
         </div>
     </div>
 @endsection
-
-@section('additionalscripts')
-    <!-- Add any additional scripts here if needed -->
-@endsection

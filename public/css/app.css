@@ -111,10 +111,15 @@ footer {
 
 .light-3 {
     background-color: #F79256;
-    color: white;
+    color: black;
 }
 
 .light-4 {
     background-color: #7F7CAF;
-    color: white;
+    color: black;
+}
+
+.light-5 {
+    background-color: #95BF8F;
+    color: black;
 }

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use Illuminate\Http\Request;
 use Auth;
 use App\Models\Request as RequestModel;
 use App\Models\Event;
 use App\Models\User;
+use App\Models\Like as Likes;
 
 class DashboardController extends Controller
 {
@@ -17,11 +19,16 @@ class DashboardController extends Controller
         if ($user->isSuperAdmin()) {
             $users = User::where('role', 'user')->get();
             $admins = User::where('role', 'admin')->get();
-            // $requests = RequestModel::where('status', 'pending')->orderBy('created_at', 'desc')->get();
-            // $pending_requests = $requests->count();
-            $events = Event::all();
+
+            // get all events with their creator
+            $events = Event::with('creator')->get();
+
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($events);
+            // $events = Event::all();
             $total_events = $events->count();
             $total_users = $users->count() + $admins->count();
+            $total_likes = Likes::all()->count();
             return view(
                 'dashboard.super_admin',
                 [
@@ -31,6 +38,7 @@ class DashboardController extends Controller
                     'events' => $events,
                     'totalUsers' => $total_users,
                     'totalEvents' => $total_events,
+                    'totalLikes' => $total_likes,
                     // 'pendingRequests' => $pending_requests
                 ]
             );

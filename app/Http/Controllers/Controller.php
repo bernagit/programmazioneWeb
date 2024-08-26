@@ -9,4 +9,5 @@ abstract class Controller
         // redirect to error page
         return view('error', ['error' => $error]);
     }
+
 }

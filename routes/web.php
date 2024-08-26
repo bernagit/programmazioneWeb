@@ -12,7 +12,7 @@ use App\Http\Middleware\Admin;
 // route open to all
 Route::get('/', [IndexController::class, 'index'])->name('index');
 Route::get('/api/passedEvents', [IndexController::class, 'passedEvents'])->name('passedEvents');
-Route::get('/passedEvents/{id}', [IndexController::class, 'passedEvent'])->name('passedEvent');
+Route::get('/showEvent/{id}', [IndexController::class, 'showEvent'])->name('showEvent');
 
 // route for register
 Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register');
@@ -35,6 +35,10 @@ Route::post('/editEvent/{id}', [EventController::class, 'update'])->middleware([
 Route::delete('/deleteEvent/{id}', [EventController::class, 'destroy'])->middleware(['auth', Admin::class])->name('events.delete');
 Route::delete('/deleteUser/{id}', [RegisterController::class, 'destroy'])->middleware(['auth', SuperAdmin::class])->name('users.delete');
 Route::post('/userChangeRole/{id}', [RegisterController::class, 'changeRole'])->middleware(['auth', SuperAdmin::class])->name('users.change_permission');
+
+// route for like the event
+Route::post('/likeEvent/{id}', [EventController::class, 'like'])->middleware(['auth'])->name('events.like');
+Route::post('/unlikeEvent/{id}', [EventController::class, 'unlike'])->middleware(['auth'])->name('events.unlike');
 
 // route for unauthorized actions
 Route::get('/unauthorized', function () {

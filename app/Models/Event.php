@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use App\Models\Like;
 
 class Event extends Model
 {
@@ -68,5 +69,25 @@ class Event extends Model
     public function getTimeAttribute()
     {
         return Carbon::parse($this->datetime)->format('H:i');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'event_id', 'id');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function isLikedByUser()
+    {
+        return $this->likes()->where('user_id', auth()->id())->exists();
+    }
+
+    public function likesCount()
+    {
+        return $this->likes()->count();
     }
 }
