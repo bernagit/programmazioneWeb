@@ -116,6 +116,7 @@
                         <br>
                         <div class="scrollable-container">
                             <div class="row" id="events-container">
+                                <!-- Events will be dynamically added here -->
                             </div>
                         </div>
                     </div>
@@ -139,91 +140,125 @@
 @endsection
 
 @section('additionalscripts')
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js" crossorigin="anonymous"></script>
     <script>
-        // initialize the events at loading page
+        document.addEventListener('DOMContentLoaded', async function() {
+            const slider = document.getElementById('radiusSlider');
+            const output = document.getElementById('radiusValue');
+            const filter = document.getElementById('filterEvents');
+            const eventsContainer = document.getElementById('events-container');
 
-        const slider = document.getElementById('radiusSlider');
-        const output = document.getElementById('radiusValue');
-
-        slider.addEventListener('input', function() {
-            output.textContent = `${this.value} km`;
-        });
-
-        const filter = document.getElementById('filterEvents');
-        const eventsContainer = document.getElementById('events-container');
-        const filterEventsLabel = document.getElementById('filterEventsLabel');
-
-        filter.addEventListener('change', function() {
-            const isFiltered = filter.checked;
-            const endpoint = isFiltered ? '/filteredEvents' : '/events';
-
-            fetch(endpoint)
-                .then(response => response.json())
-                .then(data => {
-                    updateEvents(data);
-                })
-                .catch(error => {
-                    console.error(`Error fetching ${isFiltered ? 'filtered' : 'all'} events:`, error);
+            // Update slider value display
+            if (slider && output) {
+                slider.addEventListener('input', function() {
+                    output.textContent = `${this.value} km`;
                 });
-        });
+            }
 
-        function updateEvents(events) {
-            // Clear the current content
-            eventsContainer.innerHTML = '';
-            // Iterate over the events and generate HTML for each event
-            events.forEach(event => {
-                const eventHTML = `
-                <div class="col-12 col-md-6 col-lg-4 mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>${event.name}</h3>
-                        </div>
-                        <div class="img-event">
-                            <img src="${event.image_path}" class="card-img-top img-fluid img-event">
-                        </div>
-                        <div class="card-body">
-                            <p>${event.description}</p>
-                            <p><strong>Date:</strong> ${event.date}</p>
-                            <p><strong>Time:</strong> ${event.time}</p>
-                            <p><strong>Price:</strong> ${event.price}</p>
-                            <div class="row">
-                                <div class="col-6">
-                                    <a href="/showEvent/${event.id}" class="btn light-2">View</a>
-                                </div>
-                                <div class="col-6">
-                                    <i class="fas fa-heart heart-icon ${event.liked ? 'liked' : ''}"
-                                        data-id="${event.id}"></i>
-                                    <span id="like-count-${event.id}">${event.likes_count}</span>
-                                    Likes
+            // Fetch and update events
+            async function fetchAndUpdateEvents() {
+                const isFiltered = filter && filter.checked;
+                const endpoint = isFiltered ? '/filteredEvents' : '/events';
+                try {
+                    const response = await fetch(endpoint);
+                    let data = await response.json();
+                    console.log(JSON.stringify(data));
+
+                    if (data.length === 0) {
+                        eventsContainer.innerHTML = '<p>No events found</p>';
+                        return;
+                    }
+                    if (!Array.isArray(data)) {
+                        data = Object.values(data);
+                    }
+                    updateEvents(data);
+                } catch (error) {
+                    console.error(`Error fetching ${isFiltered ? 'filtered' : 'all'} events:`, error);
+                }
+            }
+
+            // Update events in the container
+            function updateEvents(events) {
+                eventsContainer.innerHTML = '';
+                events.forEach(event => {
+                    const eventHTML = `
+                    <div class="col-12 col-md-6 col-lg-4 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>${event.name}</h3>
+                            </div>
+                            <div class="img-event">
+                                <img src="${event.image_path}" class="card-img-top img-fluid img-event">
+                            </div>
+                            <div class="card-body">
+                                <p>${event.description}</p>
+                                <p><strong>Date:</strong> ${event.date}</p>
+                                <p><strong>Time:</strong> ${event.time}</p>
+                                <p><strong>Price:</strong> ${event.price}</p>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a href="/showEvent/${event.id}" class="btn light-2">View</a>
+                                    </div>
+                                    <div class="col-6">
+                                        <i class="fas fa-heart heart-icon ${event.liked ? 'liked' : ''}" data-id="${event.id}"></i>
+                                        <span id="like-count-${event.id}">${event.likes_count}</span> Likes
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `;
-                // Append the generated HTML to the events container
-                eventsContainer.insertAdjacentHTML('beforeend', eventHTML);
-            });
-        }
-
-
-        // fetch the events from the server when the page is loaded
-        $ = jQuery;
-        $(document).ready(async function() {
-            // Fetch events from the server
-            const filter = document.getElementById('filterEvents');
-
-            filter.checked = false;
-            fetch('/events')
-                .then(response => response.json())
-                .then(data => {
-                    updateEvents(data);
-                })
-                .catch(error => {
-                    console.error('Error fetching events:', error);
+                `;
+                    eventsContainer.insertAdjacentHTML('beforeend', eventHTML);
                 });
+            }
 
+            // Initial fetch and update
+            await fetchAndUpdateEvents();
+
+            // Set up filter change listener
+            if (filter) {
+                filter.addEventListener('change', fetchAndUpdateEvents);
+            }
+
+            // Handle like/unlike functionality
+            async function handleLike(event) {
+                if (event.target.classList.contains('heart-icon')) {
+                    const button = event.target;
+                    const eventId = button.getAttribute('data-id');
+                    const isLiked = button.classList.contains('liked');
+                    const url = isLiked ? `/unlikeEvent/${eventId}` : `/likeEvent/${eventId}`;
+
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        });
+                        const data = await response.json();
+
+                        if (data.success) {
+                            const likeCountElement = document.getElementById(`like-count-${eventId}`);
+                            if (likeCountElement) {
+                                likeCountElement.textContent = data.likes_count;
+                            }
+
+                            if (data.liked) {
+                                button.classList.add('liked');
+                            } else {
+                                button.classList.remove('liked');
+                            }
+                        } else {
+                            console.error('Error:', data.message);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+            }
+
+            // Attach the click handler to the document
+            document.addEventListener('click', handleLike);
         });
     </script>
 @endsection

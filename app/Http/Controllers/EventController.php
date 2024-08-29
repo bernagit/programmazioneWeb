@@ -161,7 +161,11 @@ class EventController extends Controller
     }
     private function formatEvents($events)
     {
-        $events->transform(function ($event) {
+        if (!is_array($events) && $events instanceof \Illuminate\Support\Collection) {
+            $events = $events->all(); // Convert collection to array if necessary
+        }
+
+        foreach ($events as &$event) {
             $event->date = \Carbon\Carbon::parse($event->datetime)->format('Y-m-d');
             $event->time = \Carbon\Carbon::parse($event->datetime)->format('H:i');
             // remove datetime from the response
@@ -169,21 +173,14 @@ class EventController extends Controller
             $event->liked = $event->isLikedByUser();
             $event->image_path = '/storage/images/' . $event->image_path;
             $event->likes_count = $event->likesCount();
-            return $event;
-        });
+        }
+
         return $events;
     }
     public function getEvents()
     {
         $events = Event::all();
         $events = $this->formatEvents($events);
-        // if events is not an array, return it as an array
-        $out = new \Symfony\Component\Console\Output\ConsoleOutput();
-        $out->writeln($events);
-
-        if (!is_array($events)) {
-            $events = [$events];
-        }
         return response()->json($events);
     }
 
@@ -200,14 +197,7 @@ class EventController extends Controller
             return $distance <= $user->prefRadius;
         });
 
-        $out = new \Symfony\Component\Console\Output\ConsoleOutput();
-        $out->writeln($events);
-
         $events = $this->formatEvents($events);
-        if (!is_array($events)) {
-            $events = [$events];
-        }
-        // return an array also if there is only one event
         return response()->json($events);
     }
 }
