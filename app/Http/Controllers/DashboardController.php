@@ -44,9 +44,32 @@ class DashboardController extends Controller
             );
         } elseif ($user->isAdmin()) {
             $users = User::where('role', 'user')->get();
-            return view('dashboard.admin', ['events' => Event::all(), 'users' => $users]);
+            return view(
+                'dashboard.admin',
+                [
+                    'events' => Event::all(),
+                    'users' => $users
+                ]
+            );
         } else {
-            return view('dashboard.user', ['events' => Event::all()]);
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            return view(
+                'dashboard.user',
+                [
+                    'events' => Event::all(),
+                    'latitude' => $user->prefLatitude,
+                    'longitude' => $user->prefLongitude,
+                    'price' => $user->prefPrice,
+                    'radius' => $user->prefRadius,
+                ]
+            );
         }
+    }
+
+    public function updateUserSettings(Request $request)
+    {
+        $user = Auth::user();
+        $user->update($request->all());
+        return redirect()->back()->with('success', 'Settings updated successfully!');
     }
 }

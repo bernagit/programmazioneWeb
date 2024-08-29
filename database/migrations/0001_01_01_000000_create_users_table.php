@@ -15,6 +15,10 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email')->unique();
             $table->enum('role', ['user', 'admin', 'super_admin'])->default('user');
+            $table->decimal('prefLongitude', 10, 7)->nullable();
+            $table->decimal('prefLatitude', 10, 7)->nullable();
+            $table->integer('prefRadius')->nullable();
+            $table->integer('prefPrice')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

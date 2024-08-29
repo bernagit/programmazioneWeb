@@ -99,41 +99,7 @@
 @endsection
 
 @section('additionalscripts')
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script src="js/app.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('search-input');
-            const suggestionsList = document.getElementById('suggestions');
-
-            searchInput.addEventListener('input', function() {
-                const query = searchInput.value;
-
-                if (query.length > 2) {
-                    fetch(
-                            `https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1&limit=5`
-                        )
-                        .then(response => response.json())
-                        .then(data => {
-                            suggestionsList.innerHTML = '';
-
-                            data.forEach(location => {
-                                const suggestionItem = document.createElement('li');
-                                suggestionItem.classList.add('list-group-item',
-                                    'list-group-item-action');
-                                suggestionItem.textContent = `${location.display_name}`;
-                                suggestionItem.addEventListener('click', () => {
-                                    searchInput.value = location.display_name;
-                                    suggestionsList.innerHTML = '';
-                                });
-                                suggestionsList.appendChild(suggestionItem);
-                            });
-                        });
-                } else {
-                    suggestionsList.innerHTML = '';
-                }
-            });
-        });
-    </script>
 @endsection

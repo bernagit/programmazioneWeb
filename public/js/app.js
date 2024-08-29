@@ -185,3 +185,46 @@ $(document).ready(async function () {
     // Request geolocation
     navigator.geolocation.getCurrentPosition(success, error);
 });
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search-input');
+    const suggestionsList = document.getElementById('suggestions');
+
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value;
+
+        // start timer to prevent too many requests
+        setTimeout(() => {
+            if (query === searchInput.value) {
+                fetchSuggestions(query);
+            }
+        }, 400);
+
+        function fetchSuggestions(query) {
+            if (query.length > 2) {
+                fetch(
+                    `https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1&limit=5`
+                )
+                    .then(response => response.json())
+                    .then(data => {
+                        suggestionsList.innerHTML = '';
+
+                        data.forEach(location => {
+                            const suggestionItem = document.createElement('li');
+                            suggestionItem.classList.add('list-group-item',
+                                'list-group-item-action');
+                            suggestionItem.textContent = `${location.display_name}`;
+                            suggestionItem.addEventListener('click', () => {
+                                searchInput.value = location.display_name;
+                                suggestionsList.innerHTML = '';
+                            });
+                            suggestionsList.appendChild(suggestionItem);
+                        });
+                    });
+            } else {
+                suggestionsList.innerHTML = '';
+            }
+        }
+    });
+});

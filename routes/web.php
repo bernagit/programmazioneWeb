@@ -26,6 +26,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // route for dashboard
 Route::get('/dashboard', [DashboardController::class, 'handle'])->middleware(['auth'])->name('dashboard');
 Route::post('/changePassword', [RegisterController::class, 'changePassword'])->middleware(['auth'])->name('user.change_password');
+Route::post('/updateSettings', [RegisterController::class, 'updateSettings'])->middleware(['auth'])->name('user.update_settings');
+Route::get('/events', [EventController::class, 'getEvents'])->middleware(['auth'])->name('events');
+Route::get('/filteredEvents', [EventController::class, 'getFilteredEvents'])->middleware(['auth'])->name('filteredEvents');
 
 // route for admin and super admin
 Route::get('/createEvent', [EventController::class, 'index'])->middleware(['auth', Admin::class])->name('events.create');

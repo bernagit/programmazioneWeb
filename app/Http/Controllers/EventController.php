@@ -159,4 +159,55 @@ class EventController extends Controller
             'liked' => $event->isLikedByUser()
         ]);
     }
+    private function formatEvents($events)
+    {
+        $events->transform(function ($event) {
+            $event->date = \Carbon\Carbon::parse($event->datetime)->format('Y-m-d');
+            $event->time = \Carbon\Carbon::parse($event->datetime)->format('H:i');
+            // remove datetime from the response
+            unset($event->datetime);
+            $event->liked = $event->isLikedByUser();
+            $event->image_path = '/storage/images/' . $event->image_path;
+            $event->likes_count = $event->likesCount();
+            return $event;
+        });
+        return $events;
+    }
+    public function getEvents()
+    {
+        $events = Event::all();
+        $events = $this->formatEvents($events);
+        // if events is not an array, return it as an array
+        $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+        $out->writeln($events);
+
+        if (!is_array($events)) {
+            $events = [$events];
+        }
+        return response()->json($events);
+    }
+
+    public function getFilteredEvents()
+    {
+        $user = auth()->user();
+        $events = Event::where('price', '<=', $user->prefPrice)->get();
+        // use the haversine formula to calculate the distance
+        $events = $events->filter(function ($event) use ($user) {
+            $distance = 6371 * acos(
+                cos(deg2rad($user->prefLatitude)) * cos(deg2rad($event->latitude)) * cos(deg2rad($event->longitude) - deg2rad($user->prefLongitude)) +
+                sin(deg2rad($user->prefLatitude)) * sin(deg2rad($event->latitude))
+            );
+            return $distance <= $user->prefRadius;
+        });
+
+        $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+        $out->writeln($events);
+
+        $events = $this->formatEvents($events);
+        if (!is_array($events)) {
+            $events = [$events];
+        }
+        // return an array also if there is only one event
+        return response()->json($events);
+    }
 }

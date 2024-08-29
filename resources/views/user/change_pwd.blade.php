@@ -1,4 +1,5 @@
-<form action="{{ route('user.change_password') }}" method="POST" id="change-password-form">
+<form action="{{ route('user.change_password') }}" method="POST" id="change-password-form"
+    class="p-4 border rounded bg-light shadow-sm">
     @csrf
     <div class="mb-3">
         <label for="password" class="form-label">New Password</label>

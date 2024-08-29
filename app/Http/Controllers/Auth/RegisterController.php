@@ -75,4 +75,22 @@ class RegisterController extends Controller
 
         return redirect('dashboard')->with('success', 'Password changed');
     }
+
+    public function updateSettings(Request $request)
+    {
+        $user = User::find(auth()->user()->id);
+        $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+
+        $out->writeln($user);
+
+        $user->prefLatitude = $request->Latitude;
+        $user->prefLongitude = $request->Longitude;
+        $user->prefPrice = $request->PreferredPrice;
+        $user->prefRadius = $request->Radius;
+
+        $out->writeln($user);
+
+        $user->update($request->all());
+        return redirect('dashboard')->with('success', 'Settings updated successfully!');
+    }
 }

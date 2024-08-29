@@ -44,6 +44,7 @@
             margin-bottom: 20px;
             border-radius: 10px;
             overflow: hidden;
+            text-align: center;
         }
 
         .event-image-container img {
@@ -90,6 +91,10 @@
 
         .modal-body img {
             border-radius: 0;
+        }
+
+        .modal-body {
+            text-align: center
         }
 
         /* Responsive design */
@@ -259,6 +264,7 @@
 
                                 if (data.liked) {
                                     this.classList.add('liked');
+
                                 } else {
                                     this.classList.remove('liked');
                                 }
